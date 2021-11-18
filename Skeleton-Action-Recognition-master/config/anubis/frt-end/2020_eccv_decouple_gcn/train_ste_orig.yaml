@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+work_dir: ./work_dir/21-09-12-anubis_frt_bck_2020_eccv_decouple_gcn_ste
+#work_dir: ./work_dir/eval/20-12-09-ntu120_xsub_joint_bone_angle_only_sgcn
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/train_trig_spat_enc_jnt_3_w_orig.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/train_label.pkl
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: -1
+  normalization: False
+
+test_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/val_trig_spat_enc_jnt_3_w_orig.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/val_label.pkl
+  debug: False
+
+# model
+model: model.decouple_gcn.Model
+model_args:
+  in_channels: 12
+  num_class: 102
+  num_point: 32
+  num_person: 2
+  graph: graph.azure_kinect.Graph
+  groups: 16
+  block_size: 41
+  graph_args:
+    labeling_mode: 'spatial'
+
+#optim
+weight_decay: 0.0001
+base_lr: 1e-1
+step: [5,10,20,30]
+
+# training
+device: [0]
+keep_rate: 0.9
+only_train_epoch: 0
+batch_size: 25
+test_batch_size: 25
+num_epoch: 50
+nesterov: True

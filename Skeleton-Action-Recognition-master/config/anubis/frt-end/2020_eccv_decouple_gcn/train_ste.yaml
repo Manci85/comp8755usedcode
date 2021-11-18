@@ -1,0 +1,51 @@
+work_dir: ./work_dir/21-09-13-trn_anu101_decouple-gcn_ste
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/train_trig_spat_enc_jnt_3_w_orig.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/train_label.pkl
+  debug: False
+
+test_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/val_trig_spat_enc_jnt_3_w_orig.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anubis/frt-bck/val_label.pkl
+  debug: False
+
+# model
+model: model.decouple_gcn.Model
+model_args:
+  in_channels: 12
+  num_class: 102
+  num_point: 32
+  num_person: 2
+  graph: graph.azure_kinect.Graph
+  groups: 16
+  graph_args:
+    labeling_mode: 'spatial'
+
+# optim
+weight_decay: 0.0005
+base_lr: 1e-3
+step: [30]
+
+# training
+num_epoch: 50
+device: [0,1,2]
+batch_size: 80
+forward_batch_size: 80
+test_batch_size: 180
+nesterov: True
+
+# Additional
+to_add_onehot: False
+
+optimizer: Adam
+
+# Pretrained models
+#weights: "work_dir/21-05-06-ntu120_xsub_jnt_only_sgcn/2021-05-06T18-09-54/weights/weights-20-24142.pt"
+#checkpoint: "work_dir/21-05-06-ntu120_xsub_jnt_only_sgcn/2021-05-06T18-09-54/checkpoints/checkpoint-20-fwbz42-24142.pt"
+#resume: True
+
+eval_start: 10
+eval_interval: 1

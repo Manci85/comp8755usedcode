@@ -1,0 +1,55 @@
+work_dir: ./work_dir/21-09-11-ntu_xsub_2019_cvpr_as_gcn
+
+#weights1: ./work_dir/21-09-07-ntu_xsub_2019_cvpr_as_gcn_aim/max_hop_4/lamda_05/epoch9_model1.pt
+#weights2: ./work_dir/21-09-07-ntu_xsub_2019_cvpr_as_gcn_aim/max_hop_4/lamda_05/epoch9_model2.pt
+
+feeder: feeders.feeder_as_gcn.Feeder
+train_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/train_data_joint.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/train_label.pkl
+  random_move: True
+  repeat_pad: True
+  down_sample: True
+
+test_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/val_data_joint.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/val_label.pkl
+  random_move: False
+  repeat_pad: True
+  down_sample: True
+
+model1: model.as_gcn_2019_cvpr.as_gcn.Model
+model1_args:
+  in_channels: 3
+  num_class: 60
+  dropout: 0.5
+  edge_importance_weighting: True
+  graph_args:
+    layout: 'ntu-rgb+d'
+    strategy: 'spatial'
+    max_hop: 4
+
+model2: model.as_gcn_2019_cvpr.utils.adj_learn.AdjacencyLearn
+model2_args:
+  n_in_enc: 150
+  n_hid_enc: 128
+  edge_types: 3
+  n_in_dec: 3
+  n_hid_dec: 128
+  node_num: 25
+
+weight_decay: 0.0001
+base_lr1: 0.1
+base_lr2: 0.0005
+step: [50, 70, 90]
+
+device: [3]
+batch_size: 16
+test_batch_size: 16
+start_epoch: 0
+num_epoch: 60
+num_worker: 4
+
+max_hop_dir: max_hop_4
+lamda_act_dir: lamda_05
+lamda_act: 0.5

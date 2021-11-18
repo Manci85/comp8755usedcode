@@ -1,0 +1,64 @@
+
+work_dir: ./work_dir/21-01-12-kinetics_bone_angle_arms_legs_onehot_only_sgcn
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/Datasets/kinetics/train_data_joint_bone_angle_cangle_arms_legs.npy
+  label_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/Datasets/kinetics/train_label.pkl
+  debug: False
+
+test_feeder_args:
+  data_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/Datasets/kinetics/val_data_joint_bone_angle_cangle_arms_legs.npy
+  label_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/Datasets/kinetics/val_label.pkl
+#  debug: False
+
+# model
+model: model.msg3d.Model
+model_args:
+  in_channels: 28
+  num_class: 400
+  num_point: 18
+  num_person: 2
+  num_gcn_scales: 8    # `num_scales` == `K + 1` in the paper
+  num_g3d_scales: 8
+  graph: graph.kinetics.AdjMatrixGraph
+
+  # transformers
+  to_use_temporal_transformer: False
+
+  # ablation
+  ablation: sgcn_only
+
+
+# optim
+weight_decay: 0.0005
+base_lr: 0.05
+step: [35,45,55]
+
+# training
+num_epoch: 65
+device: [1]
+batch_size: 75
+forward_batch_size: 75
+test_batch_size: 150
+nesterov: True
+
+# Additional
+to_add_onehot: True
+feature_combo: bone+angular
+
+optimizer: SGD
+
+# Pretrained models
+weights: "work_dir/21-01-12-kinetics_bone_angle_arms_legs_onehot_only_sgcn/2021-01-12T15-02-06/weights/weights-30-131130.pt"
+checkpoint: "work_dir/21-01-12-kinetics_bone_angle_arms_legs_onehot_only_sgcn/2021-01-12T15-02-06/checkpoints/checkpoint-30-fwbz55-131130.pt"
+resume: True
+
+eval_start: 46
+eval_interval: 1
+
+# test
+# phase: test
+# weights: "/media/zhenyue-qin/Backup Plus/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/results_dw_beijing/20-12-09-ntu120_xsub_joint_bone_angle_only_sgcn/2020-12-11T17-30-05/weights/weights-55-46200.pt"
+# save_score: True

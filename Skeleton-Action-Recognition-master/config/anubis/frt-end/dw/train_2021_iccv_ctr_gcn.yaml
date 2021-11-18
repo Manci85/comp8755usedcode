@@ -1,0 +1,45 @@
+
+work_dir: ./work_dir/21-09-05-anubis-frt-end-2021-iccv-ctr-gcn
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: "/data/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anu-all/trn_data_all_action_front.npy"
+  label_path: "/data/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anu-all/trn_label_all_action_front.pkl"
+  debug: False
+
+test_feeder_args:
+  data_path: "/data/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anu-all/val_data_all_action_back.npy"
+  label_path: "/data/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/anu-all/val_label_all_action_back.pkl"
+  debug: False
+
+# model
+model: model.ctrgcn.Model
+model_args:
+  num_class: 102
+  num_point: 32
+  num_person: 2
+  graph: graph.azure_kinect.AdjMatrixGraph
+  graph_args:
+    labeling_mode: 'spatial'
+
+# optim
+weight_decay: 0.0005
+base_lr: 1e-3
+step: [30]
+
+# training
+num_epoch: 60
+device: [0,1]
+batch_size: 12
+forward_batch_size: 12
+test_batch_size: 22
+nesterov: True
+
+# Additional
+to_add_onehot: False
+
+optimizer: SGD
+
+eval_start: 5
+eval_interval: 5

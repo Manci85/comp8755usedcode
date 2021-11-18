@@ -1,0 +1,61 @@
+
+work_dir: ./work_dir/20-12-03-ntu120_xsub_joint_only_sgcn_temp_trans_end_tcn_sigmoid
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: ./data/ntu120/xsub/train_data_joint.npy
+  label_path: ./data/ntu120/xsub/train_label.pkl
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: -1
+  normalization: False
+
+test_feeder_args:
+  data_path: ./data/ntu120/xsub/val_data_joint.npy
+  label_path: ./data/ntu120/xsub/val_label.pkl
+  debug: False
+
+# model
+model: model.msg3d.Model
+model_args:
+  num_class: 120
+  num_point: 25
+  num_person: 2
+  num_gcn_scales: 13    # `num_scales` == `K + 1` in the paper
+  num_g3d_scales: 6
+  graph: graph.ntu_rgb_d.AdjMatrixGraph
+
+  # transformers
+  to_use_temporal_transformer: True
+  temp_trans_joint_dim: 5
+  section_sizes: [30, 15, 5]
+  frame_norm: sigmoid
+
+  # ablation
+  ablation: sgcn_only
+
+
+# optim
+weight_decay: 0.0005
+base_lr: 0.05
+step: [25, 32, 39, 46, 53]
+
+# training
+num_epoch: 60
+device: [0,1,2,3]
+batch_size: 60
+forward_batch_size: 60
+test_batch_size: 60
+nesterov: True
+
+optimizer: SGD
+
+# Pretrained models
+#weights: "/media/zhenyue-qin/Backup Plus/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/work_dir/ntu120_only_g3d_temporal_transformer/xsub/2020-11-25T14-49-20/weights/weights-1-1969.pt"
+#checkpoint: "/media/zhenyue-qin/Backup Plus/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/work_dir/ntu120_only_g3d_temporal_transformer/xsub/2020-11-25T14-49-20/checkpoints/checkpoint-1-fwbz8-1969.pt"
+
+eval_start: 5
+eval_interval: 5

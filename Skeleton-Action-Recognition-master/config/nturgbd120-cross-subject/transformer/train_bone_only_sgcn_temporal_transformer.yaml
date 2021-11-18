@@ -1,0 +1,62 @@
+
+work_dir: ./work_dir/20-12-05-ntu120_xsub_bone_only_sgcn_temp_trans_end_tcn_sigmoid_section_60_30_10
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: ./data/ntu120/xsub/train_data_bone.npy
+  label_path: ./data/ntu120/xsub/train_label.pkl
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: -1
+  normalization: False
+
+test_feeder_args:
+  data_path: ./data/ntu120/xsub/val_data_bone.npy
+  label_path: ./data/ntu120/xsub/val_label.pkl
+  debug: False
+
+# model
+model: model.msg3d.Model
+model_args:
+  num_class: 120
+  num_point: 25
+  num_person: 2
+  num_gcn_scales: 13    # `num_scales` == `K + 1` in the paper
+  num_g3d_scales: 6
+  graph: graph.ntu_rgb_d.AdjMatrixGraph
+
+  # transformers
+  to_use_temporal_transformer: True
+  temp_trans_joint_dim: 5
+  section_sizes: [60, 30, 15]
+  frame_norm: sigmoid
+
+  # ablation
+  ablation: sgcn_only
+
+
+# optim
+weight_decay: 0.0005
+base_lr: 0.05
+step: [28, 36, 44, 52]
+
+# training
+num_epoch: 60
+device: [0,1]
+batch_size: 60
+forward_batch_size: 30
+test_batch_size: 30
+nesterov: True
+
+optimizer: SGD
+
+# Pretrained models
+weights: "./work_dir/20-12-05-ntu120_xsub_bone_only_sgcn_temp_trans_end_tcn_sigmoid_section_60_30_10/2020-12-05T06-24-06/weights/weights-42-44100.pt"
+checkpoint: "./work_dir/20-12-05-ntu120_xsub_bone_only_sgcn_temp_trans_end_tcn_sigmoid_section_60_30_10/2020-12-05T06-24-06/checkpoints/checkpoint-42-fwbz30-44100.pt"
+resume: True
+
+eval_start: 5
+eval_interval: 5

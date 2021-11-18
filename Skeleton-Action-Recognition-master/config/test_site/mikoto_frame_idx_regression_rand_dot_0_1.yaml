@@ -1,0 +1,61 @@
+
+work_dir: ./work_dir/21-09-19-frame_idx_regression_rand_dot_0_1
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: /mnt/80F484E6F484E030/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/train_rand_0_1_dot_jnt_3_w_orig.npy
+  label_path: /mnt/80F484E6F484E030/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/train_label.pkl
+  debug: True
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: -1
+  normalization: False
+
+test_feeder_args:
+  data_path: /mnt/80F484E6F484E030/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/val_rand_0_1_dot_jnt_3_w_orig.npy
+  label_path: /mnt/80F484E6F484E030/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/val_label.pkl
+  debug: True
+
+# model
+model: model.frame_idx_regressor.Model
+model_args:
+  in_channels: 12
+  num_class: 60
+  num_point: 25
+  num_person: 2
+  num_gcn_scales: 13    # `num_scales` == `K + 1` in the paper
+  num_g3d_scales: 6
+  graph: graph.ntu_rgb_d.AdjMatrixGraph
+
+  # transformers
+  to_use_temporal_transformer: False
+
+  # ablation
+  ablation: sgcn_only
+
+# optim
+weight_decay: 0.0005
+base_lr: 0.01
+step: [28,36,44,52]
+
+# training
+num_epoch: 30
+device: [0]
+batch_size: 16
+forward_batch_size: 16
+test_batch_size: 30
+nesterov: True
+
+# 额外的
+to_add_onehot: False
+optimizer: SGD
+
+# Pretrained models
+# weights: "work_dir/20-12-09-ntu120_xsub_only_sgcn/2020-12-09T07-59-11/weights/weights-10-7500.pt"
+# checkpoint: "work_dir/20-12-09-ntu120_xsub_only_sgcn/2020-12-09T07-59-11/checkpoints/checkpoint-10-fwbz42-7500.pt"
+# resume: True
+
+eval_start: 1
+eval_interval: 1

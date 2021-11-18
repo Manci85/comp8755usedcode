@@ -1,0 +1,64 @@
+
+#work_dir: ./work_dir/20-12-09-ntu120_xsub_joint_bone_angle_velocity_only_sgcn
+work_dir: ./work_dir/eval/20-12-09-ntu120_xsub_joint_bone_angle_velocity_only_sgcn
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: ./data/ntu120/xsub/train_data_joint_bone_angle_velocity.npy
+  label_path: ./data/ntu120/xsub/train_label.pkl
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: -1
+  normalization: False
+
+test_feeder_args:
+  data_path: ./data/ntu120/xsub/val_data_joint_bone_angle_velocity.npy
+  label_path: ./data/ntu120/xsub/val_label.pkl
+
+# model
+model: model.msg3d.Model
+model_args:
+  in_channels: 32
+  num_class: 120
+  num_point: 25
+  num_person: 2
+  num_gcn_scales: 13    # `num_scales` == `K + 1` in the paper
+  num_g3d_scales: 6
+  graph: graph.ntu_rgb_d.AdjMatrixGraph
+
+  # transformers
+  to_use_temporal_transformer: False
+
+  # ablation
+  ablation: sgcn_only
+
+
+# optim
+weight_decay: 0.0005
+base_lr: 0.05
+step: [28,36,44,52]
+
+# training
+num_epoch: 60
+device: [0,1,2,3]
+batch_size: 75
+forward_batch_size: 75
+test_batch_size: 75
+nesterov: True
+
+# 额外的
+to_add_onehot: True
+
+optimizer: SGD
+
+# Pretrained models
+# weights: "work_dir/20-12-09-ntu120_xsub_only_sgcn/2020-12-09T07-59-11/weights/weights-10-7500.pt"
+# checkpoint: "work_dir/20-12-09-ntu120_xsub_only_sgcn/2020-12-09T07-59-11/checkpoints/checkpoint-10-fwbz42-7500.pt"
+# resume: True
+
+eval_start: 20
+eval_interval: 5
+

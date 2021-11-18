@@ -1,0 +1,71 @@
+
+work_dir: ./work_dir/21-01-27-ntu_xsub_jnt_1ht_hyp
+
+# feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu120/xsub/train_data_joint.npy
+  label_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu120/xsub/train_label.pkl
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: -1
+  normalization: False
+
+test_feeder_args:
+  data_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu120/xsub/val_data_joint.npy
+  label_path: /data1/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu120/xsub/val_label.pkl
+#  debug: False
+
+# model
+model: model.msg3d.Model
+model_args:
+  in_channels: 28
+  num_class: 120
+  num_point: 25
+  num_person: 2
+  num_gcn_scales: 13    # `num_scales` == `K + 1` in the paper
+  num_g3d_scales: 6
+  graph: graph.ntu_rgb_d.AdjMatrixGraph
+
+  # transformers
+  to_use_temporal_transformer: False
+
+  # ablation
+  ablation: sgcn_only
+
+  # hyper convolution
+#  hyper_conv: ntu
+
+
+# optim
+weight_decay: 0.0005
+base_lr: 0.05
+step: [28,36,44,52]
+
+# training
+num_epoch: 60
+device: [0,1,2,3]
+batch_size: 80
+forward_batch_size: 80
+test_batch_size: 160
+nesterov: True
+
+# Additional
+to_add_onehot: True
+
+optimizer: SGD
+
+# Pretrained models
+#weights: "/media/zhenyue-qin/Backup Plus/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/work_dir/21-01-02-ntu_xsub_joint_onehot_only_sgcn/2021-01-05T16-57-23/weights/weights-27-15903.pt"
+#checkpoint: "/media/zhenyue-qin/Backup Plus/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/work_dir/21-01-02-ntu_xsub_joint_onehot_only_sgcn/2021-01-05T16-57-23/checkpoints/checkpoint-27-fwbz34-15903.pt"
+#resume: True
+
+eval_start: 27
+eval_interval: 1
+
+# test
+# phase: test
+# weights: "/media/zhenyue-qin/Backup Plus/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/results_dw_beijing/20-12-09-ntu120_xsub_joint_bone_angle_only_sgcn/2020-12-11T17-30-05/weights/weights-55-46200.pt"
+# save_score: True

@@ -1,0 +1,59 @@
+
+work_dir: ./work_dir/21-09-09-ntu_xsub_2018_aaai_st_gcn
+
+# Feeder
+feeder: feeders.feeder.Feeder
+train_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/train_data_joint.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/train_label.pkl
+  debug: False
+  random_choose: False
+  random_shift: False
+  random_move: False
+  window_size: -1
+  normalization: False
+
+test_feeder_args:
+  data_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/val_data_joint.npy
+  label_path: /data_seoul/zhenyue/Baseline-Implementation/Skeleton-Action-Recognition/2020-CVPR-Liu-MS-G3D/MS-G3D/data/ntu/xsub/val_label.pkl
+  debug: False
+
+# Model
+model: model.st_gcn.ST_GCN
+model_args:
+  in_channels: 3
+  num_class: 60
+  num_point: 25
+  num_person: 2
+  num_frames: 300
+  gcn_kernel_size: [9,3]
+  drop_prob: 0.5
+  graph_args:
+    layout: 'ntu-rgb+d'
+    strategy: 'spatial'
+    max_hop: 4
+
+# Optim
+weight_decay: 0.0005
+base_lr: 0.05
+step: [28,36,44,52]
+
+# Training
+num_epoch: 60
+device: [0]
+batch_size: 50
+forward_batch_size: 50
+test_batch_size: 50
+nesterov: True
+optimizer: SGD
+
+# Input processing
+to_add_onehot: False
+
+# Pretrained models
+#weights: "work_dir/21-09-09-ntu_xsub_2018_aaai_st_gcn/2021-09-09T09-49-19/weights/weights-best_model_epoch_10-8010.pt"
+#checkpoint: "work_dir/21-09-09-ntu_xsub_2018_aaai_st_gcn/2021-09-09T09-49-19/checkpoints/checkpoint-10-fwbz50-8010.pt"
+#resume: True
+
+eval_start: 1
+eval_interval: 5
